@@ -14,8 +14,12 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-    size: [
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+    sizes: [
       {
         type: String,
         enum: ["S", "M", "L", "XL", "XXL"],
@@ -52,5 +56,4 @@ const ProductSchema = new mongoose.Schema(
 );
 
 const Product = mongoose.model("Product", ProductSchema);
-
 module.exports = Product;

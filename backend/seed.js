@@ -2,6 +2,21 @@ const mongoose = require("mongoose");
 const { initializeDatabase } = require("./db/db.connect");
 const Product = require("./models/product.model");
 const Category = require("./models/category.model");
+// const User = require("./models/user.model");
+
+// const seedUser = async () => {
+//   const existing = await User.findOne();
+//   if (existing) return existing;
+
+//   const user = await User.create({
+//     name: "Mohd Ajmal Raza",
+//     email: "ajmal@raza.com",
+//   });
+
+//   return user;
+// };
+
+// seedUser();
 
 const categoriesData = [
   {
@@ -48,7 +63,7 @@ const seedData = async () => {
         price: 799,
         discountPercentage: 10,
         category: categories[0]._id,
-        size: ["M", "L", "XL"],
+        sizes: ["M", "L", "XL"],
         rating: 4.3,
         imageUrl:
           "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
@@ -70,7 +85,7 @@ const seedData = async () => {
         price: 1499,
         discountPercentage: 15,
         category: categories[0]._id,
-        size: ["M", "L", "XL", "XXL"],
+        sizes: ["M", "L", "XL", "XXL"],
         rating: 4.4,
         imageUrl:
           "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
@@ -92,7 +107,7 @@ const seedData = async () => {
         price: 2499,
         discountPercentage: 20,
         category: categories[0]._id,
-        size: ["M", "L", "XL"],
+        sizes: ["M", "L", "XL"],
         rating: 4.7,
         imageUrl: "https://images.unsplash.com/photo-1543076447-215ad9ba6923",
         availableQuantity: 25,
@@ -113,7 +128,7 @@ const seedData = async () => {
         price: 1999,
         discountPercentage: 12,
         category: categories[0]._id,
-        size: ["M", "L", "XL"],
+        sizes: ["M", "L", "XL"],
         rating: 4.6,
         imageUrl:
           "https://images.unsplash.com/photo-1528701800489-20be3c6e848d",
@@ -135,7 +150,7 @@ const seedData = async () => {
         price: 1299,
         discountPercentage: 10,
         category: categories[0]._id,
-        size: ["M", "L", "XL", "XXL"],
+        sizes: ["M", "L", "XL", "XXL"],
         rating: 4.5,
         imageUrl: "https://images.unsplash.com/photo-1562158070-622a0a0fc5c8",
         availableQuantity: 45,
@@ -158,7 +173,7 @@ const seedData = async () => {
         price: 1599,
         discountPercentage: 10,
         category: categories[1]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.5,
         imageUrl:
           "https://images.unsplash.com/photo-1520975922039-b1c8a1f1f3fc",
@@ -180,7 +195,7 @@ const seedData = async () => {
         price: 1699,
         discountPercentage: 15,
         category: categories[1]._id,
-        size: ["S", "M", "L", "XL"],
+        sizes: ["S", "M", "L", "XL"],
         rating: 4.6,
         imageUrl:
           "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
@@ -202,7 +217,7 @@ const seedData = async () => {
         price: 2799,
         discountPercentage: 20,
         category: categories[1]._id,
-        size: ["S", "M", "L", "XL"],
+        sizes: ["S", "M", "L", "XL"],
         rating: 4.8,
         imageUrl:
           "https://images.unsplash.com/photo-1541099649105-f69ad21f3246",
@@ -224,7 +239,7 @@ const seedData = async () => {
         price: 1899,
         discountPercentage: 18,
         category: categories[1]._id,
-        size: ["M"],
+        sizes: ["M"],
         rating: 4.4,
         imageUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
         availableQuantity: 50,
@@ -245,7 +260,7 @@ const seedData = async () => {
         price: 1599,
         discountPercentage: 12,
         category: categories[1]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.6,
         imageUrl:
           "https://images.unsplash.com/photo-1519741497674-611481863552",
@@ -269,7 +284,7 @@ const seedData = async () => {
         price: 499,
         discountPercentage: 5,
         category: categories[2]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.4,
         imageUrl:
           "https://images.unsplash.com/photo-1520962922320-2038eebab146",
@@ -291,7 +306,7 @@ const seedData = async () => {
         price: 799,
         discountPercentage: 10,
         category: categories[2]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.5,
         imageUrl:
           "https://images.unsplash.com/photo-1583001307661-8988a7fc6cf3",
@@ -313,7 +328,7 @@ const seedData = async () => {
         price: 899,
         discountPercentage: 12,
         category: categories[2]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.7,
         imageUrl:
           "https://images.unsplash.com/photo-1520975698519-59d5a1a1cdeb",
@@ -335,7 +350,7 @@ const seedData = async () => {
         price: 1299,
         discountPercentage: 15,
         category: categories[2]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.6,
         imageUrl:
           "https://images.unsplash.com/photo-1542293787938-c9e299b880b3",
@@ -357,7 +372,7 @@ const seedData = async () => {
         price: 699,
         discountPercentage: 10,
         category: categories[2]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.5,
         imageUrl:
           "https://images.unsplash.com/photo-1631532101236-5c20e1a503a1",
@@ -380,7 +395,7 @@ const seedData = async () => {
         price: 2499,
         discountPercentage: 12,
         category: categories[3]._id,
-        size: ["M", "L", "XL"],
+        sizes: ["M", "L", "XL"],
         rating: 4.6,
         imageUrl: "https://i.ibb.co/YDpjR4G/thermal-hoodie.jpg",
         availableQuantity: 120,
@@ -401,7 +416,7 @@ const seedData = async () => {
         price: 3999,
         discountPercentage: 18,
         category: categories[3]._id,
-        size: ["S", "M", "L", "XL"],
+        sizes: ["S", "M", "L", "XL"],
         rating: 4.8,
         imageUrl: "https://i.ibb.co/F7X4Q3r/long-puffer-jacket.jpg",
         availableQuantity: 80,
@@ -422,7 +437,7 @@ const seedData = async () => {
         price: 1799,
         discountPercentage: 10,
         category: categories[3]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.5,
         imageUrl: "https://i.ibb.co/f25L8YJ/kids-winter-jacket.jpg",
         availableQuantity: 90,
@@ -443,7 +458,7 @@ const seedData = async () => {
         price: 1999,
         discountPercentage: 15,
         category: categories[3]._id,
-        size: ["M", "L", "XL", "XXL"],
+        sizes: ["M", "L", "XL", "XXL"],
         rating: 4.7,
         imageUrl: "https://i.ibb.co/3yKS7MP/woolen-sweater.jpg",
         availableQuantity: 110,
@@ -464,7 +479,7 @@ const seedData = async () => {
         price: 2899,
         discountPercentage: 20,
         category: categories[3]._id,
-        size: ["S", "M", "L"],
+        sizes: ["S", "M", "L"],
         rating: 4.9,
         imageUrl: "https://i.ibb.co/kcW9cwK/fur-lined-cardigan.jpg",
         availableQuantity: 100,

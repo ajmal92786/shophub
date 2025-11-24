@@ -1,0 +1,30 @@
+{
+  "name": "myshoppingsite-backend",
+  "version": "1.0.0",
+  "description": "A full-stack e-commerce backend API for clothing store with user authentication, product management, and payment processing",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seed": "node seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  },
+  "keywords": [
+    "ecommerce",
+    "api",
+    "backend",
+    "clothing",
+    "express",
+    "mongodb"
+  ],
+  "author": "MOHD AJMAL RAZA",
+  "license": "ISC"
+}

@@ -1,60 +1,75 @@
 const mongoose = require("mongoose");
-const { initializeDatabase } = require("./db/db.connect");
-const Product = require("./models/product.model");
-const Category = require("./models/category.model");
-// const User = require("./models/user.model");
+const { initializeDatabase } = require("../db/db.connect");
+const Product = require("../models/product.model");
+const Category = require("../models/category.model");
+const User = require("../models/user.model");
 
-// const seedUser = async () => {
-//   const existing = await User.findOne();
-//   if (existing) return existing;
-
-//   const user = await User.create({
-//     name: "Mohd Ajmal Raza",
-//     email: "ajmal@raza.com",
-//   });
-
-//   return user;
-// };
-
-// seedUser();
-
-const categoriesData = [
-  {
-    name: "Men",
-    thumbnail:
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWVuJTIwY2xvdGhpbmd8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    name: "Women",
-    thumbnail:
-      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d29tZW4lMjBjbG90aGluZ3xlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    name: "Kids",
-    thumbnail:
-      "https://images.unsplash.com/photo-1601925240970-98447486fcdb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2lkcyUyMGNsb3RoaW5nfGVufDB8fDB8fHww",
-  },
-  {
-    name: "Winter Wear",
-    thumbnail:
-      "https://images.unsplash.com/photo-1457545195570-67f207084966?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8V2ludGVyJTIwV2VhciUyMGNsb3RoaW5nfGVufDB8fDB8fHww",
-  },
-  {
-    name: "Electronics",
-    thumbnail:
-      "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D",
-  },
-];
-
-const seedData = async () => {
-  await initializeDatabase();
-
+const seedUserData = async () => {
   try {
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      email: "ajmalbly27@gmail.com",
+    });
+
+    if (existingUser) return existingUser;
+
+    // Create new static user
+    const newUser = await User.create({
+      name: "Mohd Ajmal Raza",
+      email: "ajmalbly27@gmail.com",
+      phone: "+919670786585",
+    });
+
+    return newUser;
+  } catch (error) {
+    console.error("Error in seeding user data:", error);
+    throw error;
+  }
+};
+
+seedUserData();
+
+const seedProductData = async () => {
+  try {
+    await initializeDatabase();
+
     await Category.deleteMany(); // clears previous categories data
     await Product.deleteMany(); // clears previous products data
 
-    // Seed Categories
+    const categoriesData = [
+      {
+        name: "Men",
+        thumbnail:
+          "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWVuJTIwY2xvdGhpbmd8ZW58MHx8MHx8fDA%3D",
+      },
+      {
+        name: "Women",
+        thumbnail:
+          "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d29tZW4lMjBjbG90aGluZ3xlbnwwfHwwfHx8MA%3D%3D",
+      },
+      {
+        name: "Kids",
+        thumbnail:
+          "https://images.unsplash.com/photo-1601925240970-98447486fcdb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2lkcyUyMGNsb3RoaW5nfGVufDB8fDB8fHww",
+      },
+      {
+        name: "Winter Wear",
+        thumbnail:
+          "https://images.unsplash.com/photo-1457545195570-67f207084966?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8V2ludGVyJTIwV2VhciUyMGNsb3RoaW5nfGVufDB8fDB8fHww",
+      },
+      {
+        name: "Electronics",
+        thumbnail:
+          "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D",
+      },
+    ];
+
+    // Insert categories
     const categories = await Category.insertMany(categoriesData);
+
+    // Seed static user
+    const defaultUser = await seedUserData();
+    console.log("Static User Created:", defaultUser.email);
 
     const productsData = [
       // ---------------- MEN ----------------
@@ -497,15 +512,15 @@ const seedData = async () => {
       },
     ];
 
-    // Seed Products
+    // Insert products
     await Product.insertMany(productsData);
 
     console.log("Products inserted successfully!");
   } catch (error) {
-    console.error("Error seeding products:", error);
+    console.error("Error seeding product data:", error);
   } finally {
     mongoose.connection.close();
   }
 };
 
-seedData();
+module.exports = { seedProductData };

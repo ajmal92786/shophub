@@ -3,6 +3,7 @@ const { initializeDatabase } = require("./db/db.connect");
 const Product = require("./models/product.model");
 const Category = require("./models/category.model");
 const Cart = require("./models/cart.model");
+const User = require("./models/user.model");
 
 const app = express();
 initializeDatabase();
@@ -11,7 +12,7 @@ async function getAllProducts() {
   try {
     return await Product.find();
   } catch (error) {
-    throw new Error("Error fetching products: " + error.message);
+    throw error;
   }
 }
 
@@ -20,22 +21,16 @@ app.get("/api/products", async (req, res) => {
   try {
     const products = await getAllProducts();
 
-    if (products && products.length > 0) {
-      return res.status(200).json({
-        success: true,
-        data: {
-          products,
-        },
-      });
-    } else {
-      return res
-        .status(404)
-        .json({ success: false, message: "No products found." });
-    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        products,
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error in fetching products",
+      message: "Error fetching products",
       error: error.message,
     });
   }
@@ -45,7 +40,7 @@ async function getProductById(productId) {
   try {
     return await Product.findById(productId);
   } catch (error) {
-    throw new Error("Error fetching product by id: " + error.message);
+    throw error;
   }
 }
 
@@ -54,25 +49,27 @@ app.get("/api/products/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
 
-    if (!productId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Product ID is required" });
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID format",
+      });
     }
 
     const product = await getProductById(productId);
 
-    if (product) {
-      return res.status(200).json({ success: true, data: { product } });
-    } else {
+    if (!product) {
       return res
         .status(404)
-        .json({ success: false, message: "Product not found." });
+        .json({ success: false, message: "Product not found" });
     }
+
+    return res.status(200).json({ success: true, data: { product } });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error in fetching product by id",
+      message: "Error fetching product by ID",
       error: error.message,
     });
   }
@@ -82,7 +79,7 @@ async function getAllCategories() {
   try {
     return await Category.find();
   } catch (error) {
-    throw new Error("Error in fetching categories: " + error.message);
+    throw error;
   }
 }
 
@@ -91,13 +88,12 @@ app.get("/api/categories", async (req, res) => {
   try {
     const categories = await getAllCategories();
 
-    if (categories) {
-      return res.status(200).json({ success: true, data: { categories } });
-    } else {
-      return res
-        .status(404)
-        .json({ success: false, message: "No categories found." });
-    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        categories,
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -111,9 +107,7 @@ async function getCategoryById(categoryId) {
   try {
     return await Category.findById(categoryId);
   } catch (error) {
-    throw new Error(
-      "Error in fetching a category by categoryId: " + error.message
-    );
+    throw error;
   }
 }
 
@@ -122,25 +116,27 @@ app.get("/api/categories/:categoryId", async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    if (!categoryId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Category Id is required." });
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category ID format",
+      });
     }
 
     const category = await getCategoryById(categoryId);
 
-    if (category) {
-      return res.status(200).json({ success: true, data: { category } });
-    } else {
+    if (!category) {
       return res
         .status(404)
-        .json({ success: true, message: "Category not found." });
+        .json({ success: true, message: "Category not found" });
     }
+
+    return res.status(200).json({ success: true, data: { category } });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error in fetching category by id",
+      message: "Error fetching category by ID",
       error: error.message,
     });
   }
@@ -153,7 +149,7 @@ async function getCart(userId) {
       "title price imageUrl"
     );
   } catch (error) {
-    throw new Error("Error in fetching cart items: " + error.message);
+    throw error;
   }
 }
 
@@ -169,20 +165,158 @@ app.get("/api/cart", async (req, res) => {
       });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+
     const cart = await getCart(userId);
 
     if (!cart) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No items present in the cart." });
+      return res.status(200).json({
+        success: false,
+        message: "Your cart is empty",
+        cart: { items: [] },
+      });
     }
 
-    return res.status(200).json({ success: true, data: { cart } });
+    return res.status(200).json({ success: true, cart });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error in fetching cart items",
+      message: "Error fetching cart items",
       error: error.message,
+    });
+  }
+});
+
+async function addToCart(userId, productId, size, quantity) {
+  try {
+    let cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      cart = await Cart.create({
+        userId,
+        items: [
+          {
+            productId,
+            size,
+            quantity,
+          },
+        ],
+      });
+
+      return cart;
+    }
+
+    // Check for duplicate product + size
+    const index = cart.items.findIndex(
+      (item) => item.productId.toString() === productId && item.size === size
+    );
+
+    if (index > -1) {
+      // product already exists with same size
+      cart.items[index].quantity += quantity;
+    } else {
+      // new product or different size
+      cart.items.push({
+        productId,
+        size,
+        quantity,
+      });
+    }
+
+    await cart.save();
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint to add product to the cart
+app.post("/api/cart", async (req, res) => {
+  try {
+    const { userId, productId, size, quantity = 1 } = req.body;
+
+    // Validate user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Validate product
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Add to cart
+    const updatedCart = await addToCart(userId, productId, size, quantity);
+
+    return res.status(200).json({
+      success: true,
+      message: "Product added to cart",
+      cart: updatedCart,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error in add to cart",
+      error: error.message,
+    });
+  }
+});
+
+async function updateQuantity(userId, productId, quantity, size) {
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
+    const index = cart.items.findIndex(
+      (item) => item.productId.toString() === productId && item.size === size
+    );
+
+    if (index === -1) {
+      throw new Error("Item not found");
+    }
+
+    cart.items[index].quantity = quantity;
+
+    await cart.save();
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint to update the quantity of the product in the cart
+app.post("/api/cart/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { userId, quantity, size } = req.body;
+
+    const updatedCart = await updateQuantity(userId, productId, quantity, size);
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Quantity updated successfully",
+        cart: updatedCart,
+      });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error in updating quantity of the product",
     });
   }
 });

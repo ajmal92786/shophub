@@ -6,6 +6,7 @@ const Category = require("./models/category.model");
 const Cart = require("./models/cart.model");
 const User = require("./models/user.model");
 const Wishlist = require("./models/wishlist.model");
+const Address = require("./models/Address.model");
 
 const app = express();
 initializeDatabase();
@@ -657,6 +658,125 @@ app.delete("/api/wishlist", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error in clear wishlist",
+      error: error.message,
+    });
+  }
+});
+
+async function getAddresses(userId) {
+  try {
+    return await Address.find({ user: userId });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint to fetching addresses from database
+app.get("/api/addresses", async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format and user ID is required",
+      });
+    }
+
+    const addresses = await getAddresses(userId);
+
+    if (addresses.length === 0) {
+      return res.status(404).json({
+        success: true,
+        message: "No address found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        addresses,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error in fetching addresses",
+      error: error.message,
+    });
+  }
+});
+
+async function createAddress(userId, data) {
+  try {
+    return await Address.create({ user: userId, ...data });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint to add address to the database
+app.post("/api/addresses", async (req, res) => {
+  try {
+    const {
+      userId,
+      name,
+      phone,
+      pincode,
+      state,
+      city,
+      addressLine,
+      landmark,
+      addressType,
+      isDefault,
+    } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+
+    if (
+      !userId ||
+      !name ||
+      !phone ||
+      !pincode ||
+      !state ||
+      !city ||
+      !addressLine
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "User ID, name, phone, pincode, state, city and addressLine is required",
+      });
+    }
+
+    const address = await createAddress(userId, {
+      name,
+      phone,
+      pincode,
+      state,
+      city,
+      addressLine,
+      landmark,
+      addressType,
+      isDefault,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Address added successfully",
+      data: {
+        address,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error in adding addresse",
       error: error.message,
     });
   }

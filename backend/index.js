@@ -1018,7 +1018,7 @@ async function placeOrder(userId, addressId, paymentMethod, paymentStatus) {
   }
 }
 
-// Endpoint to place order
+// Endpoint to place order for cart items
 app.post("/api/orders", async (req, res) => {
   try {
     const { userId, addressId, paymentMethod, paymentStatus } = req.body;
@@ -1074,6 +1074,191 @@ app.post("/api/orders", async (req, res) => {
       success: false,
       message: "Error in placing order",
       error: error.message,
+    });
+  }
+});
+
+async function placeBuyNowOrder(
+  userId,
+  productId,
+  quantity,
+  size,
+  addressId,
+  paymentMethod
+) {
+  try {
+    const product = await Product.findById(productId);
+
+    const orderItem = {
+      product: productId,
+      price: product.price, // price at order time
+      quantity,
+      size,
+    };
+
+    const totalAmount = product.price * quantity;
+
+    const order = await Order.create({
+      user: userId,
+      items: [orderItem],
+      totalAmount,
+      shippingAddress: addressId,
+      paymentMethod,
+    });
+
+    return order;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint: Direct order API
+app.post("/api/orders/buy-now", async (req, res) => {
+  try {
+    const { userId, productId, quantity, size, addressId, paymentMethod } =
+      req.body;
+
+    // Validate userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Validate productId
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid productId" });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Validate quantity
+    if (!quantity || quantity < 1) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Quantity must be at least 1" });
+    }
+
+    // Validate size
+    if (product.sizes && !product.sizes.includes(size)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid size selection",
+      });
+    }
+
+    // Validate address
+    if (!mongoose.Types.ObjectId.isValid(addressId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid addressId",
+      });
+    }
+
+    const address = await Address.findOne({ _id: addressId, user: userId });
+    if (!address) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    // Validate payment method
+    if (!["cod", "online"].includes(paymentMethod)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method",
+      });
+    }
+
+    const order = await placeBuyNowOrder(
+      userId,
+      productId,
+      quantity,
+      size,
+      addressId,
+      paymentMethod
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Order placed successfully",
+      data: { order },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Error in placing order",
+    });
+  }
+});
+
+async function getOrderById(userId, orderId) {
+  try {
+    return await Order.findOne({ _id: orderId, user: userId });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Endpoint to get a specific order
+app.get("/api/orders/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { userId } = req.query;
+
+    // Validate mongo IDs
+    if (
+      !mongoose.Types.ObjectId.isValid(orderId) ||
+      !mongoose.Types.ObjectId.isValid(userId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid userId or orderId",
+      });
+    }
+
+    // Validate user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const order = await getOrderById(userId, orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order fetched successfully",
+      data: { order },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Error in fetching order by orderId",
     });
   }
 });

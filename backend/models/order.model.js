@@ -15,8 +15,8 @@ const OrderSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
-        quantity: { type: Number, required: true },
         price: { type: Number, required: true }, // price at the time of order
+        quantity: { type: Number, required: true },
         size: { type: String, required: true },
       },
     ],

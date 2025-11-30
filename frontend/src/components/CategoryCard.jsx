@@ -5,9 +5,11 @@ function CategoryCard({ categories }) {
         <div
           key={category._id}
           className="col-6 col-sm-4 col-md-3 col-lg-2 d-flex"
-          style={{ cursor: "pointer" }}
         >
-          <div className="card border-0 w-100 h-100">
+          <div
+            className="card border-0 w-100 h-100"
+            style={{ cursor: "pointer" }}
+          >
             <img
               src={category.thumbnail}
               class="card-img-top rounded object-fit-cover"

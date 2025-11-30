@@ -62,6 +62,11 @@ const seedProductData = async () => {
         thumbnail:
           "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D",
       },
+      {
+        name: "Books",
+        thumbnail:
+          "https://plus.unsplash.com/premium_photo-1669652639356-f5cb1a086976?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      },
     ];
 
     // Insert categories
@@ -504,6 +509,74 @@ const seedProductData = async () => {
           "BODY-WARMING FABRIC: Thick yet breathable knit ensures perfect temperature balance.",
           "COZY WINTER COMPANION: Ideal for home comfort, office wear, and chilly outdoor strolls.",
           "PREMIUM FINISH: High-quality stitching and textured knit provide an elegant winter vibe.",
+        ],
+        returnPolicy: { returnable: true, returnDays: 10 },
+        payOnDelivery: true,
+        freeDelivery: true,
+        securePayment: true,
+      },
+
+      // ---------- BOOKS ----------
+      {
+        title: "The Silent Echoes",
+        price: 499,
+        discountPercentage: 15,
+        category: categories[1]._id, // Books category
+        sizes: [], // Not applicable for books
+        rating: 4.7,
+        imageUrl:
+          "https://images.unsplash.com/photo-1528207776546-365bb710ee93",
+        availableQuantity: 120,
+        descriptionPoints: [
+          "A HEART-TOUCHING STORY: A deeply emotional fiction novel exploring human relationships.",
+          "BEAUTIFUL NARRATIVE: Captivating writing style that keeps readers engaged.",
+          "AWARD-WINNING AUTHOR: Written by a bestselling contemporary novelist.",
+          "PERFECT GIFT: Ideal for literature lovers and fiction enthusiasts.",
+          "PREMIUM PRINT: High-quality paper with a smooth matte finish.",
+        ],
+        returnPolicy: { returnable: true, returnDays: 7 },
+        payOnDelivery: true,
+        freeDelivery: true,
+        securePayment: true,
+      },
+      {
+        title: "Rise & Refocus",
+        price: 350,
+        discountPercentage: 20,
+        category: categories[1]._id,
+        sizes: [],
+        rating: 4.5,
+        imageUrl:
+          "https://images.unsplash.com/photo-1495446815901-a7297e633e8d",
+        availableQuantity: 200,
+        descriptionPoints: [
+          "BOOST PRODUCTIVITY: Practical steps to improve focus and discipline.",
+          "BACKED BY RESEARCH: Contains proven self-improvement frameworks.",
+          "EASY TO FOLLOW: Clear language with real-life examples.",
+          "LIFE-CHANGING HABITS: Helps build consistent daily routines.",
+          "MODERN DESIGN: Clean typography with durable binding.",
+        ],
+        returnPolicy: { returnable: true, returnDays: 7 },
+        payOnDelivery: true,
+        freeDelivery: true,
+        securePayment: true,
+      },
+      {
+        title: "The Midnight Cipher",
+        price: 599,
+        discountPercentage: 12,
+        category: categories[1]._id,
+        sizes: [],
+        rating: 4.6,
+        imageUrl:
+          "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4",
+        availableQuantity: 90,
+        descriptionPoints: [
+          "GRIPPING THRILLER: A fast-paced mystery with unpredictable twists.",
+          "INTENSE STORYLINE: Engages the reader from the very first chapter.",
+          "CRITICALLY ACCLAIMED: Praised for its suspense and storytelling.",
+          "IMMERSIVE WORLD: Richly detailed settings and characters.",
+          "PREMIUM QUALITY: Strong paperback binding built to last.",
         ],
         returnPolicy: { returnable: true, returnDays: 10 },
         payOnDelivery: true,

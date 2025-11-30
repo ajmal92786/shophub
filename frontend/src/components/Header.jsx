@@ -1,20 +1,21 @@
 import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
-import { IoHeartSharp } from "react-icons/io5";
+import { FaHeart } from "react-icons/fa";
 
 function Header() {
   return (
     <header className="bg-white shadow-sm">
       <nav className="navbar navbar-expand-lg">
         <div className="container d-flex align-items-center justify-content-between">
-          <Link to="/" className="navbar-brand fw-bold fs-3 text-primary">
+          <Link to="/" className="navbar-brand fw-bold fs-3 text-danger">
             ShopHub
           </Link>
 
           {/* MOBILE: ICONS + TOGGLER (Right Side) */}
           <div className="d-flex d-lg-none align-items-center gap-3">
             <Link to="/wishlist" className="nav-link p-0">
-              <IoHeartSharp size={24} />
+              <FaHeart size={24} />
             </Link>
 
             <Link to="/cart" className="nav-link p-0 position-relative">
@@ -54,8 +55,14 @@ function Header() {
 
             <ul className="navbar-nav ms-auto d-none d-lg-flex flex-row gap-3 align-items-center">
               <li className="nav-item">
+                <Link to="/profile" className="nav-link">
+                  <FaUser size={24} />
+                </Link>
+              </li>
+
+              <li className="nav-item">
                 <Link to="/wishlist" className="nav-link">
-                  <IoHeartSharp size={24} />
+                  <FaHeart size={24} />
                 </Link>
               </li>
 

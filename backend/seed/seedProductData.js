@@ -108,7 +108,7 @@ const seedProductData = async () => {
         sizes: ["M", "L", "XL", "XXL"],
         rating: 4.4,
         imageUrl:
-          "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
+          "https://images.unsplash.com/photo-1605192554106-d549b1b975cd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWVuJTIwamVhbnN8ZW58MHx8MHx8fDA%3D",
         availableQuantity: 40,
         descriptionPoints: [
           "PREMIUM DENIM: Crafted from high-quality stretch denim for ultimate comfort.",
@@ -262,7 +262,8 @@ const seedProductData = async () => {
         category: categories[1]._id,
         sizes: ["M"],
         rating: 4.4,
-        imageUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+        imageUrl:
+          "https://images.pexels.com/photos/904350/pexels-photo-904350.jpeg",
         availableQuantity: 50,
         descriptionPoints: [
           "ELEGANT DESIGN: Modern, premium look suitable for all outfits.",
@@ -308,7 +309,7 @@ const seedProductData = async () => {
         sizes: ["S", "M", "L"],
         rating: 4.4,
         imageUrl:
-          "https://images.unsplash.com/photo-1520962922320-2038eebab146",
+          "https://images.unsplash.com/photo-1691565564627-c519212b122f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8S2lkcyUyMENvdHRvbiUyMFQtU2hpcnR8ZW58MHx8MHx8fDA%3D",
         availableQuantity: 60,
         descriptionPoints: [
           "SOFT & SAFE: Gentle cotton fabric perfect for sensitive kid's skin.",

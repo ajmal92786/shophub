@@ -23,7 +23,7 @@ app.use(
 
 async function getAllProducts() {
   try {
-    return await Product.find();
+    return await Product.find().populate("category");
   } catch (error) {
     throw error;
   }

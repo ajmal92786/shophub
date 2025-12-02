@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function CategoryCard({ categories }) {
+  const navigate = useNavigate();
+
   return (
     <>
       {categories.map((category) => (
@@ -9,10 +13,11 @@ function CategoryCard({ categories }) {
           <div
             className="card border-0 w-100 h-100"
             style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/products/${category.name}`)}
           >
             <img
               src={category.thumbnail}
-              class="card-img-top rounded object-fit-cover"
+              className="card-img-top rounded object-fit-cover"
               alt={`${category.name} category`}
               style={{ height: "110px" }}
             />

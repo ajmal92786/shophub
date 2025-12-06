@@ -159,7 +159,7 @@ async function getCart(userId) {
   try {
     return await Cart.findOne({ userId }).populate(
       "items.productId",
-      "title price imageUrl"
+      "title price imageUrl discountPercentage"
     );
   } catch (error) {
     throw error;
@@ -250,6 +250,11 @@ async function addToCart(userId, productId, size, quantity) {
     }
 
     await cart.save();
+    await cart.populate(
+      "items.productId",
+      "title price imageUrl discountPercentage"
+    );
+
     return cart;
   } catch (error) {
     throw error;
@@ -297,7 +302,10 @@ app.post("/api/cart", async (req, res) => {
 
 async function updateQuantity(userId, productId, quantity, size) {
   try {
-    const cart = await Cart.findOne({ userId });
+    const cart = await Cart.findOne({ userId }).populate(
+      "items.productId",
+      "title price imageUrl discountPercentage"
+    );
 
     if (!cart) {
       throw new Error("Cart not found");
@@ -388,6 +396,11 @@ async function removeItem(userId, productId, size) {
     );
 
     await cart.save();
+    await cart.populate(
+      "items.productId",
+      "title price imageUrl discountPercentage"
+    );
+
     return cart;
   } catch (error) {
     throw error;

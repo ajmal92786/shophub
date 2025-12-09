@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -9,26 +9,75 @@ import { TbTruckReturn } from "react-icons/tb";
 import { TbCoinRupeeFilled } from "react-icons/tb";
 import { TbTruckDelivery } from "react-icons/tb";
 import { RiSecurePaymentLine } from "react-icons/ri";
+import useCartContext from "../contexts/CartContext";
+import useToastContext from "../contexts/ToastContext";
+import { calculatePriceAfterDiscount } from "../utils/utils";
+import useWishlistContext from "../contexts/WishlistContext";
+import loadingImg from "../assets/loadingImage.gif";
 
 function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+
+  const { addToCart } = useCartContext();
+  const { showToast } = useToastContext();
+  const { wishlistIds, addToWishlist, removeFromWishlist } =
+    useWishlistContext();
   const { productId } = useParams();
 
   const { data, loading, error } = useFetch(`/api/products/${productId}`);
   const product = data?.data?.product;
 
-  function calculatePriceAfterDiscount(originalPrice, discountPercentage) {
-    const discount = discountPercentage / 100;
-    const discountedPrice = originalPrice - originalPrice * discount;
-    return Math.floor(discountedPrice);
-  }
+  const handleAddToWishlist = async (productId) => {
+    if (wishlistIds.includes(productId)) {
+      const result = await removeFromWishlist(productId);
+
+      if (result.success) {
+        showToast("Item removed from wishlist!", "warning");
+      } else {
+        showToast(
+          result.message || "Error in removing from wishlist!",
+          "warning"
+        );
+      }
+    } else {
+      const result = await addToWishlist(productId);
+
+      if (result.success) {
+        showToast("Item added to wishlist!", "success");
+      } else {
+        showToast(result.message || "Error in add to wishlist!", "warning");
+      }
+    }
+  };
+
+  const handleAddToCart = async (productId, selectedSize, quantity) => {
+    if (
+      !selectedSize &&
+      !["Books", "Electronics"].includes(product.category.name)
+    ) {
+      showToast("Please choose a size", "warning");
+      return;
+    }
+
+    const result = await addToCart(productId, selectedSize, quantity);
+
+    if (result.success) {
+      showToast("Item added to cart!", "success");
+    } else {
+      showToast(result.message || "Failed to add to cart", "warning");
+    }
+  };
 
   return (
     <>
       <Header />
-      <main className="container py-5">
-        {loading && <p className="text-center">Loading...</p>}
+      <main className="container py-4">
+        {loading && (
+          <div className="text-center" style={{ minHeight: "80vh" }}>
+            <img src={loadingImg} alt="Loading Image" className="img-fluid" />
+          </div>
+        )}
         {error && (
           <p className="py-3 text-center text-danger">Something went wrong!</p>
         )}
@@ -39,7 +88,14 @@ function ProductDetailsPage() {
               <div className="d-flex flex-column">
                 <div className="position-relative" style={{ height: "72vh" }}>
                   <div className="p-2 position-absolute end-0">
-                    <button className="p-2 bg-light border-0 rounded-circle text-secondary">
+                    <button
+                      className={`p-2 bg-light border-0 rounded-circle ${
+                        wishlistIds.includes(productId)
+                          ? "text-danger"
+                          : "text-secondary"
+                      }`}
+                      onClick={() => handleAddToWishlist(product._id)}
+                    >
                       <IoMdHeart size={27} />
                     </button>
                   </div>
@@ -50,7 +106,14 @@ function ProductDetailsPage() {
                   />
                 </div>
                 <button className="my-2 btn btn-warning">Buy Now</button>
-                <button className="btn btn-dark">Add to Cart</button>
+                <button
+                  className="btn btn-dark"
+                  onClick={() =>
+                    handleAddToCart(product._id, selectedSize, quantity)
+                  }
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
 
@@ -184,8 +247,8 @@ function ProductDetailsPage() {
                 <div className="fw-bold">Description:</div>
                 {product?.descriptionPoints?.length > 0 && (
                   <ul>
-                    {product.descriptionPoints.map((descPoint) => (
-                      <li>{descPoint}</li>
+                    {product.descriptionPoints.map((descPoint, index) => (
+                      <li key={index}>{descPoint}</li>
                     ))}
                   </ul>
                 )}

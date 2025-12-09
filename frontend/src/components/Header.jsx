@@ -2,8 +2,13 @@ import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
+import useCartContext from "../contexts/CartContext";
+import useWishlistContext from "../contexts/WishlistContext";
 
 function Header() {
+  const { cart } = useCartContext();
+  const { wishlist } = useWishlistContext();
+
   return (
     <header className="bg-white shadow-sm">
       <nav className="navbar navbar-expand-lg">
@@ -24,7 +29,7 @@ function Header() {
                 className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                 style={{ fontSize: "0.7rem" }}
               >
-                0
+                {cart?.items?.length}
               </span>
             </Link>
 
@@ -60,9 +65,15 @@ function Header() {
                 </Link>
               </li>
 
-              <li className="nav-item">
+              <li className="nav-item position-relative">
                 <Link to="/wishlist" className="nav-link">
                   <FaHeart size={24} />
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style={{ fontSize: "0.7rem" }}
+                  >
+                    {wishlist?.items.length > 0 ? wishlist.items.length : null}
+                  </span>
                 </Link>
               </li>
 
@@ -73,7 +84,7 @@ function Header() {
                     className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                     style={{ fontSize: "0.7rem" }}
                   >
-                    0
+                    {cart?.items?.length}
                   </span>
                 </Link>
               </li>

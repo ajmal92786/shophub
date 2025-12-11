@@ -1,35 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import useCartContext from "../contexts/CartContext";
-import { calculatePriceAfterDiscount } from "../utils/utils";
+import { calculateTotalPrice } from "../utils/utils";
 
 function PriceDetails() {
-  const { cart } = useCartContext();
-  const deliveryCharges = 499;
+  const { cart, deliveryCharges } = useCartContext();
 
   const navigate = useNavigate();
-
-  const calculateTotalPrice = (items) => {
-    const totalPriceBeforeDiscount = items.reduce(
-      (sum, curr) => sum + curr.productId.price * curr.quantity,
-      0
-    );
-
-    const totalPriceAfterDiscount = items.reduce(
-      (sum, curr) =>
-        sum +
-        calculatePriceAfterDiscount(
-          curr.productId.price,
-          curr.productId.discountPercentage
-        ) *
-          curr.quantity,
-      0
-    );
-
-    const totalDiscount = totalPriceBeforeDiscount - totalPriceAfterDiscount;
-    const totalAmount = totalPriceAfterDiscount + deliveryCharges;
-
-    return { totalDiscount, totalPriceAfterDiscount, totalAmount };
-  };
 
   const handlePlaceOrder = () => {
     navigate("/checkout");
@@ -44,13 +20,17 @@ function PriceDetails() {
         <div className="d-flex justify-content-between">
           <span>Price ({cart.items.length} items)</span>
           <span className="fw-semibold">
-            ₹{calculateTotalPrice(cart.items).totalPriceAfterDiscount}
+            ₹
+            {
+              calculateTotalPrice(cart.items, deliveryCharges)
+                .totalPriceAfterDiscount
+            }
           </span>
         </div>
         <div className="py-2 d-flex justify-content-between">
           <span>Discount</span>
           <span className="fw-bold">
-            -₹{calculateTotalPrice(cart.items).totalDiscount}
+            -₹{calculateTotalPrice(cart.items, deliveryCharges).totalDiscount}
           </span>
         </div>
         <div className="d-flex justify-content-between">
@@ -63,15 +43,18 @@ function PriceDetails() {
       <section>
         <div className="d-flex justify-content-between fw-bold">
           <span>Total Amount</span>
-          <span>₹{calculateTotalPrice(cart.items).totalAmount}</span>
+          <span>
+            ₹{calculateTotalPrice(cart.items, deliveryCharges).totalAmount}
+          </span>
         </div>
       </section>
       <hr />
 
       <section className="d-flex flex-column">
         <div className="pb-2 text-success fw-semibold">
-          You will save ₹{calculateTotalPrice(cart.items).totalDiscount} on this
-          order
+          You will save ₹
+          {calculateTotalPrice(cart.items, deliveryCharges).totalDiscount} on
+          this order
         </div>
         <button className="btn btn-sm btn-primary" onClick={handlePlaceOrder}>
           Place Order

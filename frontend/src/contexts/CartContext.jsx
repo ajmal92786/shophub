@@ -12,6 +12,7 @@ export function CartProvider({ children }) {
   const [error, setError] = useState(null);
 
   const { userInfo } = useUserContext();
+  const deliveryCharges = 499;
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   async function fetchCart() {
@@ -161,6 +162,7 @@ export function CartProvider({ children }) {
         cart,
         loading,
         error,
+        deliveryCharges,
         addToCart,
         removeFromCart,
         updateQuantityInCart,

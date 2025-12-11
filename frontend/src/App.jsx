@@ -15,6 +15,8 @@ import WishlistPage from "./pages/WishlistPage";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import CheckoutPage from "./pages/CheckoutPage";
 import ProfilePage from "./pages/ProfilePage";
+import { AddressProvider } from "./contexts/AddressContext";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -26,23 +28,12 @@ const router = createBrowserRouter([
       </FilterProvider>
     ),
   },
-  {
-    path: "/products/details/:productId",
-    element: <ProductDetailsPage />,
-  },
-  {
-    path: "/cart",
-    element: <CartPage />,
-  },
-  {
-    path: "/wishlist",
-    element: <WishlistPage />,
-  },
-  {
-    path: "/checkout",
-    element: <CheckoutPage />,
-  },
+  { path: "/products/details/:productId", element: <ProductDetailsPage /> },
+  { path: "/cart", element: <CartPage /> },
+  { path: "/wishlist", element: <WishlistPage /> },
   { path: "/profile", element: <ProfilePage /> },
+  { path: "/checkout", element: <CheckoutPage /> },
+  { path: "/order-success/:orderId", element: <OrderSuccessPage /> },
 ]);
 
 function App() {
@@ -52,7 +43,9 @@ function App() {
         <CartProvider>
           <WishlistProvider>
             <CategoryProvider>
-              <RouterProvider router={router} />
+              <AddressProvider>
+                <RouterProvider router={router} />
+              </AddressProvider>
             </CategoryProvider>
           </WishlistProvider>
         </CartProvider>

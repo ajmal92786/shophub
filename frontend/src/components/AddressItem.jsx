@@ -5,6 +5,7 @@ function AddressItem({
   isSelected = false,
   onSelect = null,
   showDelete = false,
+  onEdit = null,
 }) {
   const { deleteAddress } = useAddressContext();
 
@@ -21,12 +22,20 @@ function AddressItem({
           {address.addressType}
         </span>
         {showDelete && (
-          <button
-            className="btn btn-sm btn-danger"
-            onClick={() => deleteAddress(address._id)}
-          >
-            Delete
-          </button>
+          <div>
+            <button
+              className="btn btn-sm btn-primary me-2"
+              onClick={() => onEdit()}
+            >
+              Edit
+            </button>
+            <button
+              className="btn btn-sm btn-danger"
+              onClick={() => deleteAddress(address._id)}
+            >
+              Delete
+            </button>
+          </div>
         )}
       </div>
       <div className="py-2 fw-semibold">

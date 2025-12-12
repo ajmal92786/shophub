@@ -80,6 +80,44 @@ export function AddressProvider({ children }) {
     }
   }
 
+  async function updateAddress(addressId, addressData) {
+    if (!userInfo?._id) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/addresses/${addressId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...addressData,
+          userId: userInfo._id,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(
+          json?.error || json?.message || "Erorr in updating address"
+        );
+      }
+
+      setAddresses((prevAddresses) =>
+        prevAddresses.map((addr) =>
+          addr._id === addressId ? json?.data?.address : addr
+        )
+      );
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function deleteAddress(addressId) {
     if (!userInfo?._id) return;
 
@@ -114,7 +152,14 @@ export function AddressProvider({ children }) {
 
   return (
     <AddressContext.Provider
-      value={{ loading, error, addresses, addAddress, deleteAddress }}
+      value={{
+        loading,
+        error,
+        addresses,
+        addAddress,
+        updateAddress,
+        deleteAddress,
+      }}
     >
       {children}
     </AddressContext.Provider>

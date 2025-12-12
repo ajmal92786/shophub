@@ -5,6 +5,7 @@ import useAddressContext from "../contexts/AddressContext";
 
 function AddressList() {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [editingAddressData, setEditingAddressData] = useState(null);
   const { addresses, loading, error } = useAddressContext();
 
   return (
@@ -14,6 +15,16 @@ function AddressList() {
         <div className="text-danger text-center">
           {error || "Something went wrong!"}
         </div>
+      )}
+
+      {isAddingAddress && (
+        <section>
+          <h5>Add a new address:</h5>
+          <AddAddress
+            setIsAddingAddress={setIsAddingAddress}
+            editingAddressData={editingAddressData}
+          />
+        </section>
       )}
 
       {!loading && !error && (
@@ -39,22 +50,31 @@ function AddressList() {
                         isSelected={false}
                         onSelect={null}
                         showDelete={true}
+                        onEdit={() => {
+                          setEditingAddressData(address);
+                          setIsAddingAddress(true);
+                        }}
                       />
                     ))}
-                  </section>
-                )}
-
-                {isAddingAddress && (
-                  <section>
-                    <h5>Add a new address:</h5>
-                    <AddAddress setIsAddingAddress={setIsAddingAddress} />
                   </section>
                 )}
               </div>
             </div>
           ) : (
-            <div className="fw-semibold fs-5 text-center text-danger">
-              <span>No address found</span>
+            <div>
+              {!isAddingAddress && (
+                <div className="text-center">
+                  <div className="py-5 fs-5 text-danger">No address found</div>
+                  <div>
+                    <button
+                      className="w-50 btn btn-outline-primary rounded-0 mb-3"
+                      onClick={() => setIsAddingAddress(true)}
+                    >
+                      <span className="fs-5">+</span> ADD A NEW ADDRESS
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>

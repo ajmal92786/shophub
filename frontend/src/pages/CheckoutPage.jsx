@@ -8,11 +8,13 @@ import { calculateTotalPrice } from "../utils/utils";
 import useUserContext from "../contexts/UserContext";
 import useToastContext from "../contexts/ToastContext";
 import { useNavigate } from "react-router-dom";
+import AddAddress from "../components/AddAddress";
 
 function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
   const { userInfo } = useUserContext();
-  const { cart, deliveryCharges } = useCartContext();
+  const { cart, deliveryCharges, fetchCart } = useCartContext();
   const { addresses } = useAddressContext();
   const { showToast } = useToastContext();
 
@@ -52,7 +54,7 @@ function CheckoutPage() {
         );
       }
 
-      console.log("json: ", json);
+      fetchCart();
       navigate(`/order-success/${json.order._id}`);
     } catch (error) {
       showToast("Something went wrong. Please try again.", "danger");
@@ -67,27 +69,39 @@ function CheckoutPage() {
           <div className="row">
             <div className="col-md-7">
               <h5>Select a delivery address</h5>
-              <section>
-                <div className="fw-semibold mb-2">
-                  All addresses ({addresses?.length})
-                </div>
-                <div>
-                  {addresses.map((address) => (
-                    <AddressItem
-                      key={address._id}
-                      address={address}
-                      isSelected={selectedAddressId === address._id}
-                      onSelect={() => setSelectedAddressId(address._id)}
-                      showDelete={false}
-                    />
-                  ))}
-                </div>
-                <div>
-                  <button className="w-100 btn btn-outline-primary rounded-0 mb-3">
-                    <span className="fs-5">+</span> ADD A NEW ADDRESS
-                  </button>
-                </div>
-              </section>
+              {!isAddingAddress && (
+                <section>
+                  <div className="fw-semibold mb-2">
+                    All addresses ({addresses?.length})
+                  </div>
+                  <div>
+                    {addresses.map((address) => (
+                      <AddressItem
+                        key={address._id}
+                        address={address}
+                        isSelected={selectedAddressId === address._id}
+                        onSelect={() => setSelectedAddressId(address._id)}
+                        showDelete={false}
+                      />
+                    ))}
+                  </div>
+                  <div>
+                    <button
+                      className="w-100 btn btn-outline-primary rounded-0 mb-3"
+                      onClick={() => setIsAddingAddress(true)}
+                    >
+                      <span className="fs-5">+</span> ADD A NEW ADDRESS
+                    </button>
+                  </div>
+                </section>
+              )}
+
+              {isAddingAddress && (
+                <section>
+                  <h5>Add a new address:</h5>
+                  <AddAddress setIsAddingAddress={setIsAddingAddress} />
+                </section>
+              )}
             </div>
 
             <div className="col-md-5">

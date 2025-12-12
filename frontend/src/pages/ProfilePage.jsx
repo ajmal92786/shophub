@@ -5,6 +5,7 @@ import useUserContext from "../contexts/UserContext";
 import { FaUser } from "react-icons/fa";
 import UserInformation from "../components/UserInformation";
 import AddressList from "../components/AddressList";
+import OrderList from "../components/OrderList";
 
 function ProfilePage() {
   const [activeSection, setActiveSection] = useState("personal-information");
@@ -74,7 +75,9 @@ function ProfilePage() {
             )}
 
             {activeSection === "order-history" && (
-              <div className="col-md-8">Orders</div>
+              <div className="col-md-8">
+                <OrderList userId={userInfo?._id} />
+              </div>
             )}
           </div>
         </div>

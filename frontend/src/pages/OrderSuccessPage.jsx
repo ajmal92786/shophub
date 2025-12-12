@@ -49,8 +49,6 @@ function OrderSuccessPage() {
         );
       }
 
-      // console.log("josn: ", json);
-
       setOrderDetails(json?.data.order);
     } catch (error) {
       console.log("error: ", error);
@@ -88,11 +86,13 @@ function OrderSuccessPage() {
                 <div className="card mb-3" key={item._id}>
                   <div className="row g-0">
                     <div className="col-md-4">
-                      <img
-                        src={item.product.imageUrl}
-                        alt={item.product.title}
-                        className="img-fluid"
-                      />
+                      <div style={{ height: "150px" }}>
+                        <img
+                          src={item.product.imageUrl}
+                          alt={item.product.title}
+                          className="w-100 h-100 img-fluid object-fit-cover"
+                        />
+                      </div>
                     </div>
                     <div className="col-md-8">
                       <div className="card-body">

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAddressContext from "../contexts/AddressContext";
 
-function AddAddress({ setIsAddingAddress }) {
+function AddAddress({ setIsAddingAddress, editingAddressData }) {
   const [address, setAddress] = useState({
     name: "",
     phone: "",
@@ -13,7 +13,7 @@ function AddAddress({ setIsAddingAddress }) {
     addressType: "",
   });
 
-  const { addAddress } = useAddressContext();
+  const { addAddress, updateAddress } = useAddressContext();
 
   const handleAddressSubmit = (event) => {
     event.preventDefault();
@@ -28,8 +28,11 @@ function AddAddress({ setIsAddingAddress }) {
       return;
     }
 
-    // console.log("Address: ", address);
-    addAddress(address);
+    if (!editingAddressData) {
+      addAddress(address);
+    } else {
+      updateAddress(editingAddressData._id, address);
+    }
 
     setAddress({
       name: "",
@@ -44,6 +47,21 @@ function AddAddress({ setIsAddingAddress }) {
 
     setIsAddingAddress(false);
   };
+
+  useEffect(() => {
+    if (editingAddressData) {
+      setAddress({
+        name: editingAddressData.name,
+        phone: editingAddressData.phone,
+        addressLine: editingAddressData.addressLine,
+        landmark: editingAddressData.landmark,
+        pincode: editingAddressData.pincode,
+        city: editingAddressData.city,
+        state: editingAddressData.state,
+        addressType: editingAddressData.addressType,
+      });
+    }
+  }, [editingAddressData]);
 
   return (
     <div>
@@ -192,6 +210,9 @@ function AddAddress({ setIsAddingAddress }) {
             value="Home"
             name="addressType"
             id="homeAddressType"
+            checked={
+              editingAddressData && editingAddressData.addressType === "Home"
+            }
             onChange={(e) =>
               setAddress((prevVal) => ({
                 ...prevVal,
@@ -210,6 +231,9 @@ function AddAddress({ setIsAddingAddress }) {
             value="Work"
             name="addressType"
             id="workAddressType"
+            checked={
+              editingAddressData && editingAddressData.addressType === "Work"
+            }
             onChange={(e) =>
               setAddress((prevVal) => ({
                 ...prevVal,
@@ -228,6 +252,9 @@ function AddAddress({ setIsAddingAddress }) {
             value="Other"
             name="addressType"
             id="otherAddressType"
+            checked={
+              editingAddressData && editingAddressData.addressType === "Other"
+            }
             onChange={(e) =>
               setAddress((prevVal) => ({
                 ...prevVal,

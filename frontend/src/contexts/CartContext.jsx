@@ -163,6 +163,7 @@ export function CartProvider({ children }) {
         loading,
         error,
         deliveryCharges,
+        fetchCart,
         addToCart,
         removeFromCart,
         updateQuantityInCart,

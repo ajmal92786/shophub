@@ -16,7 +16,7 @@ initializeDatabase();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://shophub-app-eac27.vercel.app",
     credentials: true,
   })
 );
@@ -716,13 +716,6 @@ app.get("/api/addresses", async (req, res) => {
 
     const addresses = await getAddresses(userId);
 
-    if (addresses.length === 0) {
-      return res.status(404).json({
-        success: true,
-        message: "No address found",
-      });
-    }
-
     return res.status(200).json({
       success: true,
       data: {
@@ -932,13 +925,11 @@ app.delete("/api/addresses/:addressId", async (req, res) => {
         .json({ success: true, message: "Address not found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Address deleted successfully",
-        address: deletedAddress,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Address deleted successfully",
+      address: deletedAddress,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -951,8 +942,9 @@ app.delete("/api/addresses/:addressId", async (req, res) => {
 async function getOrdersForUser(userId) {
   try {
     return await Order.find({ user: userId })
-      .populate("items.product", "name price imageUrl")
-      .populate("shippingAddress");
+      .populate("items.product", "title price imageUrl")
+      .populate("shippingAddress")
+      .sort({ placedAt: -1 });
   } catch (error) {
     throw error;
   }
@@ -1019,7 +1011,6 @@ async function placeOrder(
       "items.productId",
       "title price discountPercentage"
     );
-    console.log("cart items coming to backend: ", cart.items);
 
     if (!cart || cart.items.length === 0) {
       throw new Error("Your cart is empty");
@@ -1139,6 +1130,8 @@ async function placeBuyNowOrder(
     const orderItem = {
       product: productId,
       price: product.price, // price at order time
+      priceAt:
+        product.price - (product.price * product.discountPercentage) / 100,
       quantity,
       size,
     };

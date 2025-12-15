@@ -28,8 +28,18 @@ function Header() {
 
           {/* MOBILE: ICONS + TOGGLER (Right Side) */}
           <div className="d-flex d-lg-none align-items-center gap-3">
-            <Link to="/wishlist" className="nav-link p-0">
+            <Link to="/profile" className="nav-link">
+              <FaUser size={24} />
+            </Link>
+
+            <Link to="/wishlist" className="nav-link p-0 position-relative">
               <FaHeart size={24} />
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style={{ fontSize: "0.7rem" }}
+              >
+                {wishlist?.items.length > 0 ? wishlist.items.length : null}
+              </span>
             </Link>
 
             <Link to="/cart" className="nav-link p-0 position-relative">

@@ -16,7 +16,8 @@ initializeDatabase();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://shophub-app-eac27.vercel.app",
+    origin: "http://localhost:5173",
+    // origin: "https://shophub-app-eac27.vercel.app",
     credentials: true,
   })
 );
@@ -449,14 +450,12 @@ app.delete("/api/cart/:productId", async (req, res) => {
 
 async function getWishlist(userId) {
   try {
-    return await Wishlist.findOne({ user: userId }).populate({
-      path: "items.product",
-      select: "title price sizes imageUrl category",
-      populate: {
-        path: "category",
-        select: "name",
-      },
-    });
+    const wishlist = await Wishlist.findOne({ user: userId }).populate(
+      "items.product",
+      "title price sizes imageUrl category"
+    );
+
+    return wishlist.populate("items.product.category", "name");
   } catch (error) {
     throw error;
   }
@@ -521,7 +520,11 @@ async function addToWishlist(userId, productId) {
         ],
       });
 
-      await wishlist.populate("items.product", "title price sizes imageUrl");
+      await wishlist.populate(
+        "items.product",
+        "title price sizes imageUrl category"
+      );
+
       return wishlist;
     }
 
@@ -536,9 +539,15 @@ async function addToWishlist(userId, productId) {
     wishlist.items.push({ product: productId });
 
     await wishlist.save();
-    await wishlist.populate("items.product", "title price sizes imageUrl");
+    const categoryPopulatedWishlist = await wishlist.populate(
+      "items.product",
+      "title price sizes imageUrl category"
+    );
 
-    return wishlist;
+    return await categoryPopulatedWishlist.populate(
+      "items.product.category",
+      "name"
+    );
   } catch (error) {
     throw error;
   }

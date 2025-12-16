@@ -117,7 +117,6 @@ export function CartProvider({ children }) {
       return { success: false, message: "User not logged in" };
     }
 
-    setLoading(true);
     setError(null);
 
     try {
@@ -147,8 +146,6 @@ export function CartProvider({ children }) {
       return { success: true };
     } catch (error) {
       return { success: false, message: error.message };
-    } finally {
-      setLoading(false);
     }
   }
 

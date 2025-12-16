@@ -5,6 +5,8 @@ import useToastContext from "../contexts/ToastContext";
 import useWishlistContext from "../contexts/WishlistContext";
 
 function CartItem({ cartItem }) {
+  console.log("cartItem: ", cartItem);
+
   const { quantity, size, productId } = cartItem;
   const [newQuantity, setNewQuantity] = useState(quantity);
 
@@ -30,6 +32,23 @@ function CartItem({ cartItem }) {
 
       return updatedQuantity;
     });
+  };
+
+  const handleMoveToWishlist = async (productId, size) => {
+    const result = await addToWishlist(productId);
+
+    if (result.success) {
+      showToast("Item moved to wishlist!", "success");
+      removeFromCart(productId, size);
+    } else {
+      if (result.message === "Product already in wishlist") {
+        showToast("Item moved to wishlist!", "success");
+        removeFromCart(productId, size);
+        return;
+      }
+
+      showToast(result.message || "Failed to add item to wishlist", "danger");
+    }
   };
 
   return (
@@ -106,7 +125,7 @@ function CartItem({ cartItem }) {
               </button>
               <button
                 className="btn btn-sm btn-outline-secondary"
-                onClick={() => addToWishlist(productId._id)}
+                onClick={() => handleMoveToWishlist(productId._id, size)}
               >
                 Move to Wishlist
               </button>

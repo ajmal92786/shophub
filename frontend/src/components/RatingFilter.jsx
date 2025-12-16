@@ -13,20 +13,17 @@ function RatingFilter() {
 
       <div className="pt-1">
         {[4, 3, 2, 1].map((rating) => (
-          <div className="form-check" key={rating}>
+          <div className="" key={rating}>
             <input
               type="radio"
               name="ratingFilter"
               id={`ratingFilter-${rating}`}
-              className="form-check-input"
+              className="me-2"
               value={rating}
               checked={selectedRating === rating}
               onChange={handleRatingChange}
             />
-            <label
-              className="form-check-label"
-              htmlFor={`ratingFilter-${rating}`}
-            >
+            <label htmlFor={`ratingFilter-${rating}`}>
               {rating} Stars & above
             </label>
           </div>

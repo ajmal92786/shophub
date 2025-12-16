@@ -21,9 +21,10 @@ function WishlistItem({ item }) {
     }
 
     const result = await addToCart(productId, selectedSize, quantity);
+    removeFromWishlist(productId);
 
     if (result.success) {
-      showToast("Product added to the cart!", "success");
+      showToast("Item moved to cart", "success");
     } else {
       showToast(result.message || "Error in add to cart", "warning");
     }

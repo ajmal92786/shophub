@@ -13,7 +13,7 @@ function RatingFilter() {
 
       <div className="pt-1">
         {[4, 3, 2, 1].map((rating) => (
-          <div className="" key={rating}>
+          <div className="form-check" key={rating}>
             <input
               type="radio"
               name="ratingFilter"

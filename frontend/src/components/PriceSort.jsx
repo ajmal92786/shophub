@@ -11,26 +11,26 @@ function PriceSort() {
         <input
           type="radio"
           name="sortByPrice"
-          id="sortLowToHigh"
+          id="lowToHigh"
           className="form-check-input"
           checked={sortBy === "lowToHigh"}
           onChange={() => setSortBy("lowToHigh")}
         />
-        <label className="form-check-label" htmlFor="sortLowToHigh">
+        <label className="form-check-label" htmlFor="lowToHigh">
           Price - Low to High
         </label>
       </div>
 
-      <div>
+      <div className="form-check">
         <input
           type="radio"
           name="sortByPrice"
-          id="sortHighToLow"
+          id="highToLow"
           className="form-check-input"
           checked={sortBy === "highToLow"}
           onChange={() => setSortBy("highToLow")}
         />
-        <label className="form-check-label" htmlFor="sortHighToLow">
+        <label className="form-check-label" htmlFor="highToLow">
           Price - High to Low
         </label>
       </div>

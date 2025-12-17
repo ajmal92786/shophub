@@ -22,10 +22,12 @@ function FiltersComponent() {
         </button>
       </div>
 
-      <PriceSlider />
-      <CategoryFilter />
-      <RatingFilter />
-      <PriceSort />
+      <form action="">
+        <PriceSlider />
+        <CategoryFilter />
+        <RatingFilter />
+        <PriceSort />
+      </form>
     </aside>
   );
 }
